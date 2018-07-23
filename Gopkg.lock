@@ -716,6 +716,14 @@
   version = "v1.0.1"
 
 [[projects]]
+  digest = "1:9658650e3aea0dab1bca5249d599d42a4b0313caa36e26e86f424b14707e3d55"
+  name = "github.com/mesos/mesos-go"
+  packages = ["api/v1"]
+  pruneopts = ""
+  revision = "7ec2a64a36fe5bc22d3701558bc9aa1ac6acfac5"
+  version = "v0.0.8"
+
+[[projects]]
   digest = "1:4c8d8358c45ba11ab7bb15df749d4df8664ff1582daead28bae58cf8cbe49890"
   name = "github.com/miekg/dns"
   packages = ["."]
@@ -1497,6 +1505,7 @@
     "github.com/kardianos/service",
     "github.com/kballard/go-shellquote",
     "github.com/matttproud/golang_protobuf_extensions/pbutil",
+    "github.com/mesos/mesos-go/api/v1",
     "github.com/miekg/dns",
     "github.com/multiplay/go-ts3",
     "github.com/nats-io/gnatsd/server",
