@@ -306,10 +306,13 @@ func getStatsdServerPort(s *statsd.Statsd) (int, error) {
 	done := make(chan bool)
 	go func() {
 		for {
+			s.Lock()
 			if s.UDPlistener != nil {
 				done <- true
+				s.Unlock()
 				break
 			}
+			s.Unlock()
 			time.Sleep(10 * time.Millisecond)
 		}
 	}()
