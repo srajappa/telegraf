@@ -310,6 +310,7 @@ For documentation on the latest development code see the [documentation index][d
 
 * [converter](./plugins/processors/converter)
 * [enum](./plugins/processors/enum)
+* [lowercase](./plugins/processors/lowercase)
 * [override](./plugins/processors/override)
 * [parser](./plugins/processors/parser)
 * [printer](./plugins/processors/printer)
