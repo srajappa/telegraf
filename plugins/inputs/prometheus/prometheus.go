@@ -113,14 +113,17 @@ func (p *Prometheus) AddressToURL(u *url.URL, address string) *url.URL {
 	return reconstructedURL
 }
 
-type URLAndAddress struct {
+type URLAndTags struct {
+	URL *url.URL
+	// OriginalURL will be sanitized (stripped of username and password)
+	// and added to metrics from this URL as 'url'
 	OriginalURL *url.URL
-	URL         *url.URL
-	Address     string
+	// All members of tags will be added directly to each metric from this URL
+	Tags map[string]string
 }
 
-func (p *Prometheus) GetAllURLs() ([]URLAndAddress, error) {
-	allURLs := make([]URLAndAddress, 0)
+func (p *Prometheus) GetAllURLs() ([]URLAndTags, error) {
+	allURLs := make([]URLAndTags, 0)
 	for _, u := range p.URLs {
 		URL, err := url.Parse(u)
 		if err != nil {
@@ -128,7 +131,7 @@ func (p *Prometheus) GetAllURLs() ([]URLAndAddress, error) {
 			continue
 		}
 
-		allURLs = append(allURLs, URLAndAddress{URL: URL, OriginalURL: URL})
+		allURLs = append(allURLs, URLAndTags{URL: URL, OriginalURL: URL})
 	}
 	// Kubernetes service discovery
 	for _, service := range p.KubernetesServices {
@@ -143,7 +146,7 @@ func (p *Prometheus) GetAllURLs() ([]URLAndAddress, error) {
 		}
 		for _, resolved := range resolvedAddresses {
 			serviceURL := p.AddressToURL(URL, resolved)
-			allURLs = append(allURLs, URLAndAddress{URL: serviceURL, Address: resolved, OriginalURL: URL})
+			allURLs = append(allURLs, URLAndTags{URL: serviceURL, Tags: map[string]string{"address": resolved}, OriginalURL: URL})
 		}
 	}
 	// Mesos service discovery
@@ -164,14 +167,7 @@ func (p *Prometheus) GetAllURLs() ([]URLAndAddress, error) {
 			return allURLs, err
 		}
 
-		for _, service := range getMesosTaskPrometheusURLs(tasks) {
-			URL, err := url.Parse(service)
-			if err != nil {
-				log.Printf("E! %s", err)
-				continue
-			}
-			allURLs = append(allURLs, URLAndAddress{URL: URL, OriginalURL: URL})
-		}
+		allURLs = append(allURLs, getMesosTaskPrometheusURLs(tasks)...)
 	}
 	return allURLs, nil
 }
@@ -195,7 +191,7 @@ func (p *Prometheus) Gather(acc telegraf.Accumulator) error {
 	}
 	for _, URL := range allURLs {
 		wg.Add(1)
-		go func(serviceURL URLAndAddress) {
+		go func(serviceURL URLAndTags) {
 			defer wg.Done()
 			acc.AddError(p.gatherURL(serviceURL, acc))
 		}(URL)
@@ -232,7 +228,7 @@ func (p *Prometheus) createHttpClient() (*http.Client, error) {
 	return client, nil
 }
 
-func (p *Prometheus) gatherURL(u URLAndAddress, acc telegraf.Accumulator) error {
+func (p *Prometheus) gatherURL(u URLAndTags, acc telegraf.Accumulator) error {
 	var req, err = http.NewRequest("GET", u.URL.String(), nil)
 	req.Header.Add("Accept", acceptHeader)
 	var token []byte
@@ -271,8 +267,9 @@ func (p *Prometheus) gatherURL(u URLAndAddress, acc telegraf.Accumulator) error 
 		// strip user and password from URL
 		u.OriginalURL.User = nil
 		tags["url"] = u.OriginalURL.String()
-		if u.Address != "" {
-			tags["address"] = u.Address
+
+		for k, v := range u.Tags {
+			tags[k] = v
 		}
 
 		switch metric.Type() {
@@ -367,17 +364,37 @@ func processResponse(resp mesos.Response, t agent.Response_Type) (agent.Response
 
 // getMesosTaskPrometheusURLs converts a list of tasks to a list of Prometheus
 // URLs to scrape
-func getMesosTaskPrometheusURLs(tasks *agent.Response_GetTasks) []string {
-	results := []string{}
+func getMesosTaskPrometheusURLs(tasks *agent.Response_GetTasks) []URLAndTags {
+	results := []URLAndTags{}
 	for _, t := range tasks.GetLaunchedTasks() {
 		for _, endpoint := range getEndpointsFromTaskPorts(&t) {
-			results = append(results, endpoint)
+			uat, err := makeURLAndTags(t, endpoint)
+			if err != nil {
+				log.Printf("E! %s", err)
+				continue
+			}
+			results = append(results, uat)
 		}
 		if endpoint, ok := getEndpointFromTaskLabels(&t); ok {
-			results = append(results, endpoint)
+			uat, err := makeURLAndTags(t, endpoint)
+			if err != nil {
+				log.Printf("E! %s", err)
+				continue
+			}
+			results = append(results, uat)
 		}
 	}
 	return results
+}
+
+func makeURLAndTags(task mesos.Task, endpoint string) (URLAndTags, error) {
+	URL, err := url.Parse(endpoint)
+	cid, _ := getContainerIDs(task.GetStatuses())
+	return URLAndTags{
+		URL:         URL,
+		OriginalURL: URL,
+		Tags:        map[string]string{"container_id": cid},
+	}, err
 }
 
 // getEndpointsFromTaskPorts retrieves a map of ports end enpoints from which
@@ -432,6 +449,27 @@ func getPortsFromTask(t *mesos.Task) []mesos.Port {
 		}
 	}
 	return []mesos.Port{}
+}
+
+// getContainerIDs retrieves the container ID and the parent container ID of a
+// task from its TaskStatus. The container ID corresponds to the task's
+// container, the parent container ID corresponds to the task's executor's
+// container.
+func getContainerIDs(statuses []mesos.TaskStatus) (containerID string, parentContainerID string) {
+	// Container ID is held in task status
+	for _, s := range statuses {
+		if cs := s.GetContainerStatus(); cs != nil {
+			if cid := cs.GetContainerID(); cid != nil {
+				containerID = cid.GetValue()
+				if pcid := cid.GetParent(); pcid != nil {
+					parentContainerID = pcid.GetValue()
+					return
+				}
+				return
+			}
+		}
+	}
+	return
 }
 
 // simplifyLabels converts a Labels object to a hashmap
