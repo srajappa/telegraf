@@ -158,31 +158,31 @@ func (t *producerTranslator) cpuMetricsMessage(m telegraf.Metric) (producers.Met
 		Name: producers.NodeMetricPrefix,
 		Datapoints: []producers.Datapoint{
 			// Number of CPU cores isn't available. See https://github.com/influxdata/telegraf/issues/2020.
-			producers.Datapoint{
+			{
 				Name:      "cpu.total",
 				Unit:      "percent",
 				Value:     usage_total,
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "cpu.user",
 				Unit:      "percent",
 				Value:     fields["usage_user"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "cpu.system",
 				Unit:      "percent",
 				Value:     fields["usage_system"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "cpu.idle",
 				Unit:      "percent",
 				Value:     usage_idle,
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "cpu.wait",
 				Unit:      "percent",
 				Value:     fields["usage_iowait"],
@@ -205,42 +205,42 @@ func (t *producerTranslator) diskMetricsMessage(m telegraf.Metric) producers.Met
 	return producers.MetricsMessage{
 		Name: producers.NodeMetricPrefix,
 		Datapoints: []producers.Datapoint{
-			producers.Datapoint{
+			{
 				Name:      "filesystem.capacity.total",
 				Unit:      "bytes",
 				Value:     fields["total"],
 				Timestamp: timestamp,
 				Tags:      tags,
 			},
-			producers.Datapoint{
+			{
 				Name:      "filesystem.capacity.used",
 				Unit:      "bytes",
 				Value:     fields["used"],
 				Timestamp: timestamp,
 				Tags:      tags,
 			},
-			producers.Datapoint{
+			{
 				Name:      "filesystem.capacity.free",
 				Unit:      "bytes",
 				Value:     fields["free"],
 				Timestamp: timestamp,
 				Tags:      tags,
 			},
-			producers.Datapoint{
+			{
 				Name:      "filesystem.inode.total",
 				Unit:      "count",
 				Value:     fields["inodes_total"],
 				Timestamp: timestamp,
 				Tags:      tags,
 			},
-			producers.Datapoint{
+			{
 				Name:      "filesystem.inode.used",
 				Unit:      "count",
 				Value:     fields["inodes_used"],
 				Timestamp: timestamp,
 				Tags:      tags,
 			},
-			producers.Datapoint{
+			{
 				Name:      "filesystem.inode.free",
 				Unit:      "count",
 				Value:     fields["inodes_free"],
@@ -263,25 +263,25 @@ func (t *producerTranslator) memMetricsMessage(m telegraf.Metric) producers.Metr
 	return producers.MetricsMessage{
 		Name: producers.NodeMetricPrefix,
 		Datapoints: []producers.Datapoint{
-			producers.Datapoint{
+			{
 				Name:      "memory.total",
 				Unit:      "bytes",
 				Value:     fields["total"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "memory.free",
 				Unit:      "bytes",
 				Value:     fields["free"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "memory.buffers",
 				Unit:      "bytes",
 				Value:     fields["buffered"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "memory.cached",
 				Unit:      "bytes",
 				Value:     fields["cached"],
@@ -303,19 +303,19 @@ func (t *producerTranslator) swapMetricsMessage(m telegraf.Metric) producers.Met
 	return producers.MetricsMessage{
 		Name: producers.NodeMetricPrefix,
 		Datapoints: []producers.Datapoint{
-			producers.Datapoint{
+			{
 				Name:      "swap.total",
 				Unit:      "bytes",
 				Value:     fields["total"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "swap.free",
 				Unit:      "bytes",
 				Value:     fields["free"],
 				Timestamp: timestamp,
 			},
-			producers.Datapoint{
+			{
 				Name:      "swap.used",
 				Unit:      "bytes",
 				Value:     fields["used"],
@@ -337,14 +337,14 @@ func (t *producerTranslator) netMetricsMessage(m telegraf.Metric) producers.Metr
 	tags := map[string]string{"interface": m.Tags()["interface"]}
 
 	mappings := []metricMapping{
-		metricMapping{"bytes_recv", "network.in", "bytes"},
-		metricMapping{"bytes_sent", "network.out", "bytes"},
-		metricMapping{"packets_recv", "network.in.packets", "count"},
-		metricMapping{"packets_sent", "network.out.packets", "count"},
-		metricMapping{"drop_in", "network.in.dropped", "count"},
-		metricMapping{"drop_out", "network.out.dropped", "count"},
-		metricMapping{"err_in", "network.in.errors", "count"},
-		metricMapping{"err_out", "network.out.errors", "count"},
+		{"bytes_recv", "network.in", "bytes"},
+		{"bytes_sent", "network.out", "bytes"},
+		{"packets_recv", "network.in.packets", "count"},
+		{"packets_sent", "network.out.packets", "count"},
+		{"drop_in", "network.in.dropped", "count"},
+		{"drop_out", "network.out.dropped", "count"},
+		{"err_in", "network.in.errors", "count"},
+		{"err_out", "network.out.errors", "count"},
 	}
 
 	datapoints := []producers.Datapoint{}
@@ -376,7 +376,7 @@ func (t *producerTranslator) processesMetricsMessage(m telegraf.Metric) producer
 	return producers.MetricsMessage{
 		Name: producers.NodeMetricPrefix,
 		Datapoints: []producers.Datapoint{
-			producers.Datapoint{
+			{
 				Name:      "process.count",
 				Unit:      "count",
 				Value:     m.Fields()["total"],
@@ -397,10 +397,10 @@ func (t *producerTranslator) systemMetricsMessage(m telegraf.Metric) producers.M
 	timestamp := timestampFromMetric(m)
 
 	mappings := []metricMapping{
-		metricMapping{"load1", "load.1min", "count"},
-		metricMapping{"load5", "load.5min", "count"},
-		metricMapping{"load15", "load.15min", "count"},
-		metricMapping{"uptime", "system.uptime", "count"},
+		{"load1", "load.1min", "count"},
+		{"load5", "load.5min", "count"},
+		{"load15", "load.15min", "count"},
+		{"uptime", "system.uptime", "count"},
 	}
 
 	datapoints := []producers.Datapoint{}

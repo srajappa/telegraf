@@ -53,7 +53,7 @@ func TestTranslate(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		testCase{
+		{
 			name: "cpu metric",
 			input: metricParams{
 				name: "prefix.cpu",
@@ -75,31 +75,31 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "cpu.total",
 						Unit:      "percent",
 						Value:     30.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "cpu.user",
 						Unit:      "percent",
 						Value:     20.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "cpu.system",
 						Unit:      "percent",
 						Value:     6.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "cpu.idle",
 						Unit:      "percent",
 						Value:     70.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "cpu.wait",
 						Unit:      "percent",
 						Value:     4.0,
@@ -109,7 +109,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "disk metric",
 			input: metricParams{
 				name: "prefix.disk",
@@ -133,42 +133,42 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "filesystem.capacity.total",
 						Unit:      "bytes",
 						Value:     uint64(1000),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"path": "/"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "filesystem.capacity.used",
 						Unit:      "bytes",
 						Value:     uint64(600),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"path": "/"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "filesystem.capacity.free",
 						Unit:      "bytes",
 						Value:     uint64(400),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"path": "/"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "filesystem.inode.total",
 						Unit:      "count",
 						Value:     uint64(2000),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"path": "/"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "filesystem.inode.used",
 						Unit:      "count",
 						Value:     uint64(1200),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"path": "/"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "filesystem.inode.free",
 						Unit:      "count",
 						Value:     uint64(800),
@@ -179,7 +179,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "memory metric",
 			input: metricParams{
 				name: "prefix.mem",
@@ -200,25 +200,25 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "memory.total",
 						Unit:      "bytes",
 						Value:     uint64(1024),
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "memory.free",
 						Unit:      "bytes",
 						Value:     uint64(512),
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "memory.buffers",
 						Unit:      "bytes",
 						Value:     uint64(258),
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "memory.cached",
 						Unit:      "bytes",
 						Value:     uint64(254),
@@ -228,7 +228,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "swap metric",
 			input: metricParams{
 				name: "prefix.swap",
@@ -248,19 +248,19 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "swap.total",
 						Unit:      "bytes",
 						Value:     uint64(1024),
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "swap.free",
 						Unit:      "bytes",
 						Value:     uint64(514),
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "swap.used",
 						Unit:      "bytes",
 						Value:     uint64(510),
@@ -270,7 +270,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "network metric",
 			input: metricParams{
 				name: "prefix.net",
@@ -296,56 +296,56 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "network.in",
 						Unit:      "bytes",
 						Value:     uint64(2048),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.out",
 						Unit:      "bytes",
 						Value:     uint64(256),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.in.packets",
 						Unit:      "count",
 						Value:     uint64(1000),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.out.packets",
 						Unit:      "count",
 						Value:     uint64(500),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.in.dropped",
 						Unit:      "count",
 						Value:     uint64(10),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.out.dropped",
 						Unit:      "count",
 						Value:     uint64(5),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.in.errors",
 						Unit:      "count",
 						Value:     uint64(2),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "eth0"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.out.errors",
 						Unit:      "count",
 						Value:     uint64(1),
@@ -356,7 +356,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "processes metric",
 			input: metricParams{
 				name: "prefix.processes",
@@ -374,7 +374,7 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "process.count",
 						Unit:      "count",
 						Value:     uint64(22),
@@ -384,7 +384,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "system metric",
 			input: metricParams{
 				name: "prefix.system",
@@ -405,25 +405,25 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "load.1min",
 						Unit:      "count",
 						Value:     1.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "load.5min",
 						Unit:      "count",
 						Value:     2.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "load.15min",
 						Unit:      "count",
 						Value:     3.0,
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "system.uptime",
 						Unit:      "count",
 						Value:     uint64(1000),
@@ -433,7 +433,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "container metric",
 			input: metricParams{
 				name: "prefix.foo",
@@ -463,7 +463,7 @@ func TestTranslate(t *testing.T) {
 					Labels:        map[string]string{"label_name": "label_value"},
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric1",
 						Value:     uint64(0),
 						Timestamp: timestamp,
@@ -472,7 +472,7 @@ func TestTranslate(t *testing.T) {
 							"executor_name": "ename",
 						},
 					},
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric2",
 						Value:     uint64(1),
 						Timestamp: timestamp,
@@ -485,7 +485,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "container metric with empty executor_name",
 			input: metricParams{
 				name: "prefix.foo",
@@ -515,7 +515,7 @@ func TestTranslate(t *testing.T) {
 					Labels:        map[string]string{"label_name": "label_value"},
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric1",
 						Value:     uint64(0),
 						Timestamp: timestamp,
@@ -523,7 +523,7 @@ func TestTranslate(t *testing.T) {
 							"container_id": "cid",
 						},
 					},
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric2",
 						Value:     uint64(1),
 						Timestamp: timestamp,
@@ -535,7 +535,7 @@ func TestTranslate(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "app metric",
 			input: metricParams{
 				name: "prefix.foo",
@@ -564,13 +564,13 @@ func TestTranslate(t *testing.T) {
 					TaskName:      "tname",
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric1",
 						Value:     uint64(0),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"label_name": "label_value"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric2",
 						Value:     uint64(1),
 						Timestamp: timestamp,
@@ -582,7 +582,7 @@ func TestTranslate(t *testing.T) {
 
 		// App metrics are assumed to come from statsd, which may provide NaN values. These values should be converted
 		// to an empty string.
-		testCase{
+		{
 			name: "app metric with NaN value",
 			input: metricParams{
 				name: "prefix.foo",
@@ -610,7 +610,7 @@ func TestTranslate(t *testing.T) {
 					TaskName:      "tname",
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "prefix.foo.metric1",
 						Value:     "",
 						Timestamp: timestamp,
@@ -621,7 +621,7 @@ func TestTranslate(t *testing.T) {
 		},
 
 		// System metrics may sometimes be missing. Those metrics should not be transmitted as nil.
-		testCase{
+		{
 			name: "system metrics with missing values",
 			input: metricParams{
 				name: "system",
@@ -642,19 +642,19 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "load.1min",
 						Value:     uint64(123),
 						Unit:      "count",
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "load.5min",
 						Value:     uint64(1234),
 						Unit:      "count",
 						Timestamp: timestamp,
 					},
-					producers.Datapoint{
+					{
 						Name:      "load.15min",
 						Value:     uint64(12345),
 						Unit:      "count",
@@ -665,7 +665,7 @@ func TestTranslate(t *testing.T) {
 		},
 
 		// Network metrics may sometimes be missing. Those metrics should not be transmitted as nil.
-		testCase{
+		{
 			name: "network metrics with missing values",
 			input: metricParams{
 				name: "net",
@@ -689,14 +689,14 @@ func TestTranslate(t *testing.T) {
 					Hostname:  translator.DCOSNodePrivateIP,
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "network.in",
 						Value:     uint64(123),
 						Unit:      "bytes",
 						Timestamp: timestamp,
 						Tags:      map[string]string{"interface": "dummy"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "network.out",
 						Value:     uint64(1234),
 						Unit:      "bytes",
@@ -708,7 +708,7 @@ func TestTranslate(t *testing.T) {
 		},
 
 		// Custom metrics from tasks collected by the Prometheus input should appear as app metrics.
-		testCase{
+		{
 			name: "prom app metric",
 			input: metricParams{
 				name: "prefix.prom.foo",
@@ -737,13 +737,13 @@ func TestTranslate(t *testing.T) {
 					TaskName:      "tname",
 				},
 				Datapoints: []producers.Datapoint{
-					producers.Datapoint{
+					{
 						Name:      "prefix.prom.foo.metric1",
 						Value:     uint64(0),
 						Timestamp: timestamp,
 						Tags:      map[string]string{"label_name": "label_value", "url": "http://example.com"},
 					},
-					producers.Datapoint{
+					{
 						Name:      "prefix.prom.foo.metric2",
 						Value:     uint64(1),
 						Timestamp: timestamp,
@@ -785,7 +785,7 @@ func TestTranslateFail(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		testCase{
+		{
 			name: "non-node metric without container_id tag",
 			input: metricParams{
 				name: "prefix.foo",
@@ -798,7 +798,7 @@ func TestTranslateFail(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "cpu metric for individual cpu",
 			input: metricParams{
 				name: "prefix.cpu",
@@ -814,7 +814,7 @@ func TestTranslateFail(t *testing.T) {
 			},
 		},
 
-		testCase{
+		{
 			name: "swap metric for swaps in/out",
 			input: metricParams{
 				name: "prefix.swap",
@@ -848,7 +848,7 @@ func TestTranslateError(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		testCase{
+		{
 			name: "cpu metric with non-float64 values",
 			input: metricParams{
 				name: "prefix.cpu",
@@ -882,7 +882,7 @@ func TestTranslateCreateError(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		testCase{
+		{
 			name: "unable to create a MetricsMessage",
 			input: metricParams{
 				name: "unknown.unknown",

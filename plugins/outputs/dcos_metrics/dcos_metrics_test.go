@@ -26,22 +26,22 @@ func TestSplitHostPort(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		testCase{
+		{
 			hostPort: "localhost:8000",
 			host:     "localhost",
 			port:     8000,
 		},
-		testCase{
+		{
 			hostPort: "10.10.0.1:10",
 			host:     "10.10.0.1",
 			port:     10,
 		},
-		testCase{
+		{
 			hostPort: "host.name.com:60000",
 			host:     "host.name.com",
 			port:     60000,
 		},
-		testCase{
+		{
 			hostPort: ":80",
 			host:     "",
 			port:     80,

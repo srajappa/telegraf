@@ -47,7 +47,7 @@ func isUpper(metric telegraf.Metric) bool {
 	if strings.ContainsAny(metric.Name(), capitals) {
 		return true
 	}
-	for key, _ := range metric.Fields() {
+	for key := range metric.Fields() {
 		if strings.ContainsAny(key, capitals) {
 			return true
 		}

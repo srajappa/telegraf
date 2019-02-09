@@ -13,12 +13,12 @@ import (
 
 var (
 	fields = map[string]map[string]interface{}{
-		"ChAnGeD": map[string]interface{}{
+		"ChAnGeD": {
 			"lower_case": "abc123",
 			"UPPER_CASE": "ABC123",
 			"Mixed_Case": "Abc123",
 		},
-		"unchanged": map[string]interface{}{
+		"unchanged": {
 			"lower_case": "abc123",
 		},
 	}
