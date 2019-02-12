@@ -21,6 +21,8 @@ import (
 	_ "github.com/influxdata/telegraf/plugins/inputs/couchdb"
 	_ "github.com/influxdata/telegraf/plugins/inputs/cpu"
 	_ "github.com/influxdata/telegraf/plugins/inputs/dcos"
+	_ "github.com/influxdata/telegraf/plugins/inputs/dcos_containers"
+	_ "github.com/influxdata/telegraf/plugins/inputs/dcos_statsd"
 	_ "github.com/influxdata/telegraf/plugins/inputs/disk"
 	_ "github.com/influxdata/telegraf/plugins/inputs/diskio"
 	_ "github.com/influxdata/telegraf/plugins/inputs/disque"
