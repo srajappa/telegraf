@@ -109,21 +109,21 @@ func TestPrometheusGathersMesosMetrics(t *testing.T) {
 	metricsUrl, _ := url.Parse("http://localhost:12345/metrics")
 	federateUrl, _ := url.Parse("http://localhost:12345/federate")
 	testCases := map[string]map[string]URLAndAddress{
-		"empty": map[string]URLAndAddress{},
-		"portlabel": map[string]URLAndAddress{
-			metricsUrl.String(): URLAndAddress{
+		"empty": {},
+		"portlabel": {
+			metricsUrl.String(): {
 				URL:         metricsUrl,
 				OriginalURL: metricsUrl,
 				Tags:        map[string]string{"container_id": "abc-123"},
 			},
-			federateUrl.String(): URLAndAddress{
+			federateUrl.String(): {
 				URL:         federateUrl,
 				OriginalURL: federateUrl,
 				Tags:        map[string]string{"container_id": "xyz-123"},
 			},
 		},
-		"tasklabel": map[string]URLAndAddress{
-			metricsUrl.String(): URLAndAddress{
+		"tasklabel": {
+			metricsUrl.String(): {
 				URL:         metricsUrl,
 				OriginalURL: metricsUrl,
 				Tags:        map[string]string{"container_id": "abc-123"},
