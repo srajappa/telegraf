@@ -130,6 +130,7 @@ type Statsd struct {
 	TotalConnections   selfstat.Stat
 	PacketsRecv        selfstat.Stat
 	BytesRecv          selfstat.Stat
+	DroppedMessages    selfstat.Stat
 
 	// A pool of byte slices to handle parsing
 	bufPool sync.Pool
@@ -319,6 +320,7 @@ func (s *Statsd) Start(_ telegraf.Accumulator) error {
 	s.TotalConnections = selfstat.Register("statsd", "tcp_total_connections", tags)
 	s.PacketsRecv = selfstat.Register("statsd", "tcp_packets_received", tags)
 	s.BytesRecv = selfstat.Register("statsd", "tcp_bytes_received", tags)
+	s.DroppedMessages = selfstat.Register("statsd", "dropped_messages", tags)
 
 	s.in = make(chan *bytes.Buffer, s.AllowedPendingMessages)
 	s.done = make(chan struct{})
@@ -446,10 +448,7 @@ func (s *Statsd) udpListen() error {
 			select {
 			case s.in <- b:
 			default:
-				s.drops++
-				if s.drops == 1 || s.AllowedPendingMessages == 0 || s.drops%s.AllowedPendingMessages == 0 {
-					log.Printf(dropwarn, s.drops)
-				}
+				s.reportDroppedMessage()
 			}
 		}
 	}
@@ -829,10 +828,7 @@ func (s *Statsd) handler(conn *net.TCPConn, id string) {
 			select {
 			case s.in <- b:
 			default:
-				s.drops++
-				if s.drops == 1 || s.drops%s.AllowedPendingMessages == 0 {
-					log.Printf(dropwarn, s.drops)
-				}
+				s.reportDroppedMessage()
 			}
 		}
 	}
@@ -858,6 +854,18 @@ func (s *Statsd) remember(id string, conn *net.TCPConn) {
 	s.cleanup.Lock()
 	defer s.cleanup.Unlock()
 	s.conns[id] = conn
+}
+
+// reportDroppedMessage() updates counters and logs when an incoming message is dropped due to a full buffer.
+func (s *Statsd) reportDroppedMessage() {
+	// Increment external metric.
+	s.DroppedMessages.Incr(1)
+
+	// Increment internal counter and use it to decide whether to log this event.
+	s.drops++
+	if s.drops == 1 || s.AllowedPendingMessages == 0 || s.drops%s.AllowedPendingMessages == 0 {
+		log.Printf(dropwarn, s.drops)
+	}
 }
 
 func (s *Statsd) Stop() {
